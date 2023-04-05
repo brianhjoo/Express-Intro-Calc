@@ -4,7 +4,7 @@ const express = require("express");
 const app = express();
 
 // useful error class to throw
-const { NotFoundError } = require("./expressError");
+const { NotFoundError, BadRequestError } = require("./expressError");
 
 const { findMean, findMedian, findMode } = require('./stats');
 const { convertStrNums } = require('./utils');
@@ -16,6 +16,10 @@ const MISSING = "Expected key `nums` with comma-separated list of numbers.";
 /** Finds mean of nums in qs: returns {operation: "mean", result } */
 app.get('/mean', function(req, res) {
   const strNums = req.query.nums;
+  if (strNums === '') {
+    throw new BadRequestError("Coming from the bad request error")
+  }
+
   const nums = convertStrNums(strNums);
   const mean = findMean(nums);
 
